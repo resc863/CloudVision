@@ -66,7 +66,12 @@ for i in url_list:
 				time.sleep(5)
 				result = Vision(image)
 				
-			print(result)
+			if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence'] == 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy'] == 'VERY_LIKELY'):
+				text = "Sensitive Content Detected\n"+ "Adult: "+result['adult']+"\n"+"Violence: "+result['violence']+"\n"+"Racy: "+result['racy']
+				print(text)
+			else:
+				print("Clear")
+				
 
 
 
