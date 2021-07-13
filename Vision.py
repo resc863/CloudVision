@@ -22,4 +22,7 @@ def Vision(img):
 	js = requests.post(url=url, data=json.dumps(data))
 	dic = json.loads(js.text)
 
+	if 'error' in dic['responses'][0]:
+		return 1
+
 	return dic['responses'][0]["safeSearchAnnotation"]

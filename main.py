@@ -59,7 +59,13 @@ for i in url_list:
             #file.write(response.content)
         	#file.close()
 
-			result = Vision(str(base64.b64encode(response.content).decode('UTF-8')))
+			image = str(base64.b64encode(response.content).decode('UTF-8'))
+
+			result = Vision(image)
+			while result == 1:
+				time.sleep(5)
+				result = Vision(image)
+				
 			print(result)
 
 
