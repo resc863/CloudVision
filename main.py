@@ -37,6 +37,7 @@ def search(url):
 			response = requests.get(img, headers=headers[0])
 			result = ImageProcess(response.content, conclusion)
 			if result > 0:
+				print("\n"+url+"\n")
 				conclusion = True
 		
 
