@@ -2,18 +2,10 @@ from bs4 import BeautifulSoup
 import requests, time, base64
 from Vision import Vision
 
-def ImageProcess(li, conclusion):
-	img = li.find("a")['href']
-		
-	if conclusion is True:
-		return 1
-	else:
-		headers[0]['Referer'] = url
-		response = requests.get(img, headers=headers[0])
-
-		image = str(base64.b64encode(response.content).decode('UTF-8'))
-
+def ImageProcess(img, conclusion):
+		image = str(base64.b64encode(img).decode('UTF-8'))
 		result = Vision(image)
+		
 		while result == 1:
 			time.sleep(5)
 			result = Vision(image)
@@ -40,7 +32,10 @@ def search(url):
 		if conclusion is True:
 			break
 		else:
-			result = ImageProcess(li, conclusion)
+			img = li.find("a")['href']
+			headers[0]['Referer'] = url
+			response = requests.get(img, headers=headers[0])
+			result = ImageProcess(response.content, conclusion)
 			if result > 0:
 				conclusion = True
 		
