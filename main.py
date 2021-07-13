@@ -2,6 +2,49 @@ from bs4 import BeautifulSoup
 import requests, time, base64
 from Vision import Vision
 
+def ImageProcess(li, conclusion):
+	img = li.find("a")['href']
+		
+	if conclusion is True:
+		return 1
+	else:
+		headers[0]['Referer'] = url
+		response = requests.get(img, headers=headers[0])
+
+		image = str(base64.b64encode(response.content).decode('UTF-8'))
+
+		result = Vision(image)
+		while result == 1:
+			time.sleep(5)
+			result = Vision(image)
+
+		if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence'] == 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy'] == 'VERY_LIKELY'):
+			text = "Sensitive Content Detected\n"+ "Adult: "+result['adult']+"\n"+"Violence: "+result['violence']+"\n"+"Racy: "+result['racy']
+			print(text)
+			return 1
+		else:
+			print("Clear")
+			return 0
+
+def search(url):
+	conclusion = False
+	html = requests.get(url, headers=headers[0])
+	soup = BeautifulSoup(html.text, "html.parser")
+	div = soup.find("ul", class_="appending_file")
+	lis = div.find_all("li")
+
+	title = soup.find("span", class_="title_subject").string
+	print(title)
+
+	for li in lis:
+		if conclusion is True:
+			break
+		else:
+			result = ImageProcess(li, conclusion)
+			if result > 0:
+				conclusion = True
+		
+
 url = "https://gall.dcinside.com/mgallery/board/lists?id=elsa"
 headers = [
 	{
@@ -12,7 +55,7 @@ headers = [
 BASE_URL = "https://gall.dcinside.com"
 url_list = []
 
-for i in range(1, 4):
+for i in range(1, 3):
 	params = {
 		"id" : "elsa",
 		"pages" : i
@@ -31,47 +74,8 @@ for i in range(1, 4):
 		#print(final_url)
 		url_list.append(final_url)
 
-for i in url_list:
-	conclusion = False
-
-	html = requests.get(i, headers=headers[0]).text
-	soup = BeautifulSoup(html, "html.parser")
-	div = soup.find("ul", class_="appending_file")
-	lis = div.find_all("li")
-
-	title = soup.find("span", class_="title_subject").string
-	print(title)
-	
-	for li in lis:
-		img = li.find("a")['href']
-		
-		if conclusion is True:
-			continue
-		else:
-			file_ext = img.split('.')[-1]
-        	#저장될 파일명
-			savename = img.split("no=")[2]
-			headers[0]['Referer'] = i
-			response = requests.get(img, headers=headers[0])
-
-        	#path = f"Image/{savename}"
-            #file = open(path, "wb") #경로 끝에 [1] 을 추가해 받는다.
-            #file.write(response.content)
-        	#file.close()
-
-			image = str(base64.b64encode(response.content).decode('UTF-8'))
-
-			result = Vision(image)
-			while result == 1:
-				time.sleep(5)
-				result = Vision(image)
-				
-			if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence'] == 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy'] == 'VERY_LIKELY'):
-				text = "Sensitive Content Detected\n"+ "Adult: "+result['adult']+"\n"+"Violence: "+result['violence']+"\n"+"Racy: "+result['racy']
-				print(text)
-			else:
-				print("Clear")
-				
+for url in url_list:
+	search(url)		
 
 
 
