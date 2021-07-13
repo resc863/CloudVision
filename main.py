@@ -3,20 +3,20 @@ import requests, time, base64
 from Vision import Vision
 
 def ImageProcess(img, conclusion):
-		image = str(base64.b64encode(img).decode('UTF-8'))
-		result = Vision(image)
+	image = str(base64.b64encode(img).decode('UTF-8'))
+	result = Vision(image)
 		
-		while result == 1:
-			time.sleep(5)
-			result = Vision(image)
+	while result == 1:
+		time.sleep(5)
+		result = Vision(image)
 
-		if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence'] == 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy'] == 'VERY_LIKELY'):
+	if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence'] == 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy'] == 'VERY_LIKELY'):
 			text = "Sensitive Content Detected\n"+ "Adult: "+result['adult']+"\n"+"Violence: "+result['violence']+"\n"+"Racy: "+result['racy']
-			print(text)
-			return 1
-		else:
-			print("Clear")
-			return 0
+		print(text)
+		return 1
+	else:
+		print("Clear")
+		return 0
 
 def search(url):
 	conclusion = False
