@@ -44,7 +44,6 @@ def search(url):
 			if result > 0:
 				print("\n"+url+"\n")
 				conclusion = True
-		
 
 url = "https://gall.dcinside.com/mgallery/board/lists?id=elsa"
 headers = [
