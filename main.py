@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import requests, time, base64
+import requests, time, base64, os
 from Vision import Vision
 
 
@@ -66,7 +66,10 @@ BASE_URL = "https://gall.dcinside.com"
 url_list = []
 
 for i in range(1, 3):
-    params = {"id": "elsa", "pages": i}
+    params = {
+		"id": os.environ['board'], 
+		"pages": i
+	}
 
     html = requests.get(url, params=params, headers=headers[0]).text
     soup = BeautifulSoup(html, "html.parser")

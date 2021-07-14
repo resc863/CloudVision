@@ -4,7 +4,9 @@
 Google Cloud Vision API를 이용해 게시글속 사진들의 유해성을 판단하는 프로그램입니다.  
 
 ## 처음 사용시 주의사항  
-Vision API는 유료 서비스이므로 직접 구글 클라우드에서 결제수단을 등록하고 API 키를 발급받아 사용하여야 합니다.  
+Vision API는 유료 서비스이므로 직접 구글 클라우드에서 결제수단을 등록하고 API 키를 발급받아 사용하여야 합니다.    
+
+main.py의 params 속 os.environ['board']의 위치에 게시판 id를 넣어주시면 됩니다.  
 그리고 Vision.py의 my_key 부분을 알아서 API 키로 바꿔주시기 바랍니다.  
 
 ## 현재 사용중 나타나는 문제점  
