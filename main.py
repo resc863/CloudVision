@@ -34,7 +34,12 @@ def search(url):
 		else:
 			img = li.find("a")['href']
 			headers[0]['Referer'] = url
-			response = requests.get(img, headers=headers[0])
+			try:
+				response = requests.get(img, headers=headers[0])
+			except:
+				print('Error')
+				print("\n"+url+"\n")
+				continue
 			result = ImageProcess(response.content, conclusion)
 			if result > 0:
 				print("\n"+url+"\n")
