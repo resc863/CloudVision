@@ -8,7 +8,7 @@ def ImageProcess(img, conclusion):
     result = Vision(image)
 
     while result == 1:
-        time.sleep(5)
+        time.sleep(1)
         result = Vision(image)
 
     if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (
@@ -22,7 +22,7 @@ def ImageProcess(img, conclusion):
         print(text)
         return 1
     else:
-        print("Clear")
+        print("Clear\n")
         return 0
 
 
