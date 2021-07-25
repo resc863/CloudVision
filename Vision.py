@@ -1,25 +1,23 @@
-import os
-import json, requests
-
+from google.cloud import vision
 
 def Vision(img):
-    my_secret = os.environ['key']
-    url = "https://vision.googleapis.com/v1/images:annotate" + "?key=" + my_secret
-    data = {
-        "requests": [{
-            "features": [{
-                "type": "SAFE_SEARCH_DETECTION"
-            }],
-            "image": {
-                "content": img
-            }
-        }]
-    }
+	client = vision.ImageAnnotatorClient()
+	image = vision.Image(content=img)
 
-    js = requests.post(url=url, data=json.dumps(data))
-    dic = json.loads(js.text)
+	response = client.safe_search_detection(image=image)
+	safe = response.safe_search_annotation
 
-    if 'error' in dic['responses'][0]:
-        return 1
+	likelihood_name = ('UNKNOWN', 'VERY_UNLIKELY', 'UNLIKELY', 'POSSIBLE',
+                       'LIKELY', 'VERY_LIKELY')
 
-    return dic['responses'][0]["safeSearchAnnotation"]
+	result = {}
+	result['adult'] = likelihood_name[safe.adult]
+	result['violence'] = likelihood_name[safe.violence]
+	result['spoof'] = likelihood_name[safe.spoof]
+	result['medical'] = likelihood_name[safe.medical]
+	result['racy'] = likelihood_name[safe.racy]
+	
+	if response.error.message:
+		return 1
+		
+	return result

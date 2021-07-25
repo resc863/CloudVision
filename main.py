@@ -1,15 +1,14 @@
 from bs4 import BeautifulSoup
-import requests, time, base64, os
+import requests, time
 from Vision import Vision
 
 
 def ImageProcess(img, conclusion):
-    image = str(base64.b64encode(img).decode('UTF-8'))
-    result = Vision(image)
+    result = Vision(img)
 
     while result == 1:
         time.sleep(1)
-        result = Vision(image)
+        result = Vision(img)
 
     if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (
             result['violence']
