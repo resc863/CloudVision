@@ -92,5 +92,4 @@ while True:
 			last_post = tail
 			break		
 
-	print(last_post)
 	time.sleep(5)
