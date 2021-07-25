@@ -3,6 +3,7 @@ from google.cloud import vision
 
 #Google Cloud SDK의 사용 인증을 
 #GOOGLE_APPLICATION_CREDENTIALS 환경 변수에 넣습니다
+#repl.it에서 구동을 위해 json 인증 파일을 즉시 생성하고 사용후 바로 삭제하니 주의
 
 def Vision(img):
 	data = os.environ['auth']
