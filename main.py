@@ -86,7 +86,7 @@ for i in range(1, 3):
 
     for l in post_list:
         #print(l['data-type'])
-        if not (l['data-type'] == "icon_pic"):
+        if not (l.find('em')['class'][1] == "icon_pic"):
             continue
         tail = l.find('a', href=True)['href']
         final_url = BASE_URL + tail
