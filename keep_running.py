@@ -92,7 +92,7 @@ while True:
 			break
 		else:
 			url = BASE_URL + tail
-			#search(url)
+			search(url)
 			last_post = tail
 			break		
 
