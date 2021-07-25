@@ -8,6 +8,7 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.8"
 requests = "^2.25.1"
 bs4 = "^0.0.1"
+google-cloud-vision = "^2.4.1"
 
 [tool.poetry.dev-dependencies]
 
