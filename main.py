@@ -53,8 +53,18 @@ def search(url):
                 print("\n" + url + "\n")
                 conclusion = True
 
+url = ""
+#정식갤러리와 마이너 갤러리의 차이
+gallery = input("갤러리 id를 입력하세요: ")
+a = input("정식 갤러리면 1, 마이너 갤러리면 0을 입력하세요: ")
 
-url = "https://gall.dcinside.com/mgallery/board/lists?id=elsa"
+if a == '1':
+	url = "https://gall.dcinside.com/board/lists"
+elif a == '0':
+	url = "https://gall.dcinside.com/mgallery/board/lists"
+
+print("\n")
+
 headers = [
     {
         'User-Agent':
@@ -67,7 +77,7 @@ url_list = []
 
 for i in range(1, 3):
     params = {
-		"id": os.environ['board'], 
+		"id": gallery, 
 		"pages": i
 	}
 
