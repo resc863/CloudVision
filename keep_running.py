@@ -1,7 +1,6 @@
-from bs4 import BeautifulSoup
 import requests, time, base64, os
 from Vision import Vision
-
+from bs4 import BeautifulSoup
 
 def ImageProcess(img, conclusion):
     image = str(base64.b64encode(img).decode('UTF-8'))
@@ -71,25 +70,31 @@ headers = [
 ]
 
 BASE_URL = "https://gall.dcinside.com"
-url_list = []
+last_post = ""
 
-for i in range(1, 3):
-    params = {
-		"id": gallery, 
-		"pages": i
+while True:
+	params = {
+		"id": gallery,
+		"pages": 1
 	}
+	
+	html = requests.get(url, params=params, headers=headers[0]).text
 
-    html = requests.get(url, params=params, headers=headers[0]).text
-    soup = BeautifulSoup(html, "html.parser")
-    post_list = soup.find('tbody').find_all('tr', class_="ub-content us-post")
+	soup = BeautifulSoup(html, "html.parser")
+	post_list = soup.find('tbody').find_all('tr', class_="ub-content")
+	
+	for l in post_list:
+		if not (l.find('em')['class'][1] == "icon_pic"):
+			continue
+			
+		tail = l.find('a', href=True)['href']
+		if last_post == tail:
+			break
+		else:
+			url = BASE_URL + tail
+			#search(url)
+			last_post = tail
+			break		
 
-    for l in post_list:
-        if not (l.find('em')['class'][1] == "icon_pic"):
-            continue
-        tail = l.find('a', href=True)['href']
-        final_url = BASE_URL + tail
-		#print(final_url)
-        url_list.append(final_url)
-
-for url in url_list:
-    search(url)
+	print(last_post)
+	time.sleep(5)
