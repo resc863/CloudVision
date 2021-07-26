@@ -71,7 +71,7 @@ last_post = ""
 while True:
 	params = {
 		"id": gallery,
-		"pages": 1
+		"page": 1
 	}
 	
 	html = requests.get(url, params=params, headers=headers[0]).text
