@@ -73,7 +73,7 @@ url_list = []
 for i in range(1, 3):
     params = {
 		"id": gallery, 
-		"pages": i
+		"page": i
 	}
 
     html = requests.get(url, params=params, headers=headers[0]).text
