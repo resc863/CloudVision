@@ -81,7 +81,7 @@ for i in range(1, 3):
 
     for l in post_list:
         name = l.find("td", class_="gall_writer")
-        if len(name.find("span")['class']) is 2:
+        if len(name.find("span")['class']) == 2:
             continue
         
         if not (l.find('em')['class'][1] == "icon_pic"):

@@ -84,7 +84,7 @@ while True:
             continue
         
         name = l.find("td", class_="gall_writer")
-        if len(name.find("span")['class']) is 2:
+        if len(name.find("span")['class']) == 2:
             continue
         
         tail = l.find('a', href=True)['href']
