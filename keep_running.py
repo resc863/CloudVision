@@ -88,7 +88,10 @@ while True:
 			break
 		else:
 			url = BASE_URL + tail
-			search(url)
+			try:
+				search(url)
+			except:
+				print("Deleted")
 			last_post = tail
 			break		
 
