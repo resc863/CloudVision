@@ -52,9 +52,9 @@ gallery = input("갤러리 id를 입력하세요: ")
 a = input("정식 갤러리면 1, 마이너 갤러리면 0을 입력하세요: ")
 
 if a == '1':
-	url = "https://gall.dcinside.com/board/lists"
+    url = "https://gall.dcinside.com/board/lists"
 elif a == '0':
-	url = "https://gall.dcinside.com/mgallery/board/lists"
+    url = "https://gall.dcinside.com/mgallery/board/lists"
 
 print("\n")
 
@@ -69,30 +69,34 @@ BASE_URL = "https://gall.dcinside.com"
 last_post = ""
 
 while True:
-	params = {
-		"id": gallery,
-		"page": 1
-	}
-	
-	html = requests.get(url, params=params, headers=headers[0]).text
+    params = {
+        "id": gallery,
+        "page": 1
+    }
+    
+    html = requests.get(url, params=params, headers=headers[0]).text
 
-	soup = BeautifulSoup(html, "html.parser")
-	post_list = soup.find('tbody').find_all('tr', class_="ub-content")
-	
-	for l in post_list:
-		if not (l.find('em')['class'][1] == "icon_pic"):
-			continue
-			
-		tail = l.find('a', href=True)['href']
-		if last_post == tail:
-			break
-		else:
-			url = BASE_URL + tail
-			try:
-				search(url)
-			except:
-				print("Deleted")
-			last_post = tail
-			break		
+    soup = BeautifulSoup(html, "html.parser")
+    post_list = soup.find('tbody').find_all('tr', class_="ub-content")
+    
+    for l in post_list:
+        if not (l.find('em')['class'][1] == "icon_pic"):
+            continue
+        
+        name = l.find("td", class_="gall_writer")
+        if len(name.find("span")['class']) is 2:
+            continue
+        
+        tail = l.find('a', href=True)['href']
+        if last_post == tail:
+            break
+        else:
+            url = BASE_URL + tail
+            try:
+                search(url)
+            except:
+                print("Deleted")
+            last_post = tail
+            break		
 
-	time.sleep(5)
+    time.sleep(5)
