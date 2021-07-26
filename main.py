@@ -84,6 +84,11 @@ for i in range(1, 3):
         #print(l['data-type'])
         if not (l.find('em')['class'][1] == "icon_pic"):
             continue
+        
+        name = l.find("td", class_="gall_writer")
+        if len(name.find("span")['class']) == 2:
+            continue
+        
         tail = l.find('a', href=True)['href']
         final_url = BASE_URL + tail
         #print(final_url)
