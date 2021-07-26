@@ -80,6 +80,10 @@ for i in range(1, 3):
     post_list = soup.find('tbody').find_all('tr', class_="ub-content us-post")
 
     for l in post_list:
+        name = l.find("td", class_="gall_writer")
+        if len(name.find("span")['class']) is 2:
+            continue
+        
         if not (l.find('em')['class'][1] == "icon_pic"):
             continue
         tail = l.find('a', href=True)['href']
