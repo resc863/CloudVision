@@ -81,7 +81,7 @@ while True:
         post_list = soup.find('tbody').find_all('tr', class_="ub-content")
     except:
         print("Deleted")
-        time.sleep(5)
+        time.sleep(10)
         continue
     
     for l in post_list:
