@@ -77,7 +77,12 @@ while True:
     html = requests.get(url, params=params, headers=headers[0]).text
 
     soup = BeautifulSoup(html, "html.parser")
-    post_list = soup.find('tbody').find_all('tr', class_="ub-content")
+    try:
+        post_list = soup.find('tbody').find_all('tr', class_="ub-content")
+    except:
+        print("Deleted")
+        time.sleep(5)
+        continue
     
     for l in post_list:
         if not (l.find('em')['class'][1] == "icon_pic"):
