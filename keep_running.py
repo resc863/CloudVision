@@ -1,4 +1,4 @@
-import requests, time, base64, os
+import requests, time, base64
 from Vision import Vision
 from bs4 import BeautifulSoup
 from PIL import Image
@@ -108,13 +108,29 @@ headers = [
     {
         "Connection" : "keep-alive",
         "Cache-Control" : "max-age=0",
+        "sec-ch-ua-mobile" : "?0",
+        "DNT" : "1",
+        "Upgrade-Insecure-Requests" : "1",
+        "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Accept" : "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Sec-Fetch-Site" : "none",
+        "Sec-Fetch-Mode" : "navigate",
+        "Sec-Fetch-User" : "?1",
+        "Sec-Fetch-Dest" : "document",
+        "Accept-Encoding" : "gzip, deflate, br",
+        "Accept-Language" : "ko-KR,ko;q=0.9"
+    },
+    {
+        "Connection" : "keep-alive",
+        "Cache-Control" : "max-age=0",
         "DNT" : "1",
         "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.55"
-    },
+    }
 ]
 
 BASE_URL = "https://gall.dcinside.com"
 last_post = ""
+i = 0
 
 while True:
     params = {
@@ -122,19 +138,21 @@ while True:
         "page": 1
     }
     
-    html = requests.get(url, params=params, headers=headers[0])
-
+    html = requests.get(url, params=params, headers=headers[i])
+    
     if html.status_code != 200:
-        print(html.status_code)
+        html.close()
+        time.sleep(5)
         continue
 
     soup = BeautifulSoup(html.text, "html.parser")
     tbody = soup.find('tbody')
     if tbody is None:
         print("Error 0")
+        html.close()
         time.sleep(5)
         continue
-    
+
     post_list = tbody.find_all('tr', class_="ub-content")
     
     for l in post_list:
@@ -149,12 +167,13 @@ while True:
         if last_post == tail:
             break
         else:
-            url = BASE_URL + tail
+            url1 = BASE_URL + tail
             try:
-                search(url)
+                search(url1)
             except:
                 print("Error 1")
             last_post = tail
             break		
-
+    
+    html.close()
     time.sleep(5)
