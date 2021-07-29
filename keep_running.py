@@ -141,7 +141,6 @@ while True:
     html = requests.get(url, params=params, headers=headers[i])
     
     if html.status_code != 200:
-        html.close()
         time.sleep(5)
         continue
 
@@ -149,7 +148,6 @@ while True:
     tbody = soup.find('tbody')
     if tbody is None:
         print("Error 0")
-        html.close()
         time.sleep(5)
         continue
 
@@ -174,6 +172,5 @@ while True:
                 print("Error 1")
             last_post = tail
             break		
-    
-    html.close()
+
     time.sleep(5)
