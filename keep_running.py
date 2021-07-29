@@ -44,7 +44,7 @@ def ProcessGIF(img):
         print("Clear\n")
         return 0
 
-def ImageProcess(img, conclusion):
+def ImageProcess(img):
     image = str(base64.b64encode(img).decode('UTF-8'))
     result = Vision(image)
 
@@ -106,8 +106,10 @@ print("\n")
 
 headers = [
     {
-        'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.67'
+        "Connection" : "keep-alive",
+        "Cache-Control" : "max-age=0",
+        "DNT" : "1",
+        "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.55"
     },
 ]
 
@@ -132,6 +134,7 @@ while True:
         print("Error 0")
         time.sleep(5)
         continue
+    
     post_list = tbody.find_all('tr', class_="ub-content")
     
     for l in post_list:
