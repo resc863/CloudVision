@@ -120,12 +120,16 @@ while True:
         "page": 1
     }
     
-    html = requests.get(url, params=params, headers=headers[0]).text
+    html = requests.get(url, params=params, headers=headers[0])
 
-    soup = BeautifulSoup(html, "html.parser")
+    if html.status_code != 200:
+        print(html.status_code)
+        continue
+
+    soup = BeautifulSoup(html.text, "html.parser")
     tbody = soup.find('tbody')
     if tbody is None:
-        print(html)
+        print("Error 0")
         time.sleep(5)
         continue
     post_list = tbody.find_all('tr', class_="ub-content")
@@ -146,7 +150,7 @@ while True:
             try:
                 search(url)
             except:
-                print("Deleted 1")
+                print("Error 1")
             last_post = tail
             break		
 

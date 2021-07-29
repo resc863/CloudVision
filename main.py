@@ -122,8 +122,8 @@ for i in range(1, 3):
 		"page": i
 	}
 
-    html = requests.get(url, params=params, headers=headers[0]).text
-    soup = BeautifulSoup(html, "html.parser")
+    html = requests.get(url, params=params, headers=headers[0])
+    soup = BeautifulSoup(html.text, "html.parser")
     post_list = soup.find('tbody').find_all('tr', class_="ub-content us-post")
 
     for l in post_list:
