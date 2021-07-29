@@ -1,13 +1,54 @@
 import requests, time, base64, os
 from Vision import Vision
 from bs4 import BeautifulSoup
+from PIL import Image
+from io import BytesIO
+
+def ProcessGIF(img):
+    im = Image.open(img)
+    count = 0
+
+    # To iterate through the entire gif
+    try:
+        while 1:
+            im.seek(im.tell()+1)
+            count = count + 1
+    except EOFError:
+        pass # end of sequence
+
+    im.seek(0)
+    buffered = BytesIO()
+    im.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode('UTF-8')
+    result = Vision(str(img_str))
+
+    if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence']== 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy']== 'VERY_LIKELY'):
+        text = "Sensitive Content Detected\n" + "Adult: " + result['adult'] + "\n" + "Violence: " + result['violence'] + "\n" + "Racy: " + result['racy'] + "\n" + "Medical: " + result['medical'] + "\n" + "Spoof: " + result['spoof']
+        print(text)
+        return 1
+    else:
+        print("Clear\n")
+        pass
+    
+    im.seek(count)
+    buffered = BytesIO()
+    im.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode('UTF-8')
+    result = Vision(str(img_str))
+    
+    if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence']== 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy']== 'VERY_LIKELY'):
+        text = "Sensitive Content Detected\n" + "Adult: " + result['adult'] + "\n" + "Violence: " + result['violence'] + "\n" + "Racy: " + result['racy'] + "\n" + "Medical: " + result['medical'] + "\n" + "Spoof: " + result['spoof']
+        print(text)
+        return 1
+    else:
+        print("Clear\n")
+        return 0
 
 def ImageProcess(img, conclusion):
     image = str(base64.b64encode(img).decode('UTF-8'))
     result = Vision(image)
 
     while result == 1:
-        time.sleep(1)
         result = Vision(image)
 
     if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence'] == 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy'] == 'VERY_LIKELY'):
@@ -41,7 +82,12 @@ def search(url):
                 print('Error')
                 print("\n" + url + "\n")
                 continue
-            result = ImageProcess(response.content, conclusion)
+
+            if img[-3:] == "gif":
+                result = ProcessGIF(response.content)
+            else:
+                result = ImageProcess(response.content)
+                
             if result > 0:
                 print("\n" + url + "\n")
                 conclusion = True
@@ -77,15 +123,15 @@ while True:
     html = requests.get(url, params=params, headers=headers[0]).text
 
     soup = BeautifulSoup(html, "html.parser")
-    try:
-        post_list = soup.find('tbody').find_all('tr', class_="ub-content")
-    except:
-        print("Deleted")
-        time.sleep(10)
+    tbody = soup.find('tbody')
+    if tbody is None:
+        print(html)
+        time.sleep(5)
         continue
+    post_list = tbody.find_all('tr', class_="ub-content")
     
     for l in post_list:
-        if not (l.find('em')['class'][1] == "icon_pic"):
+        if (not (l.find('em')['class'][1] == "icon_pic")) or (l is None):
             continue
         
         name = l.find("td", class_="gall_writer")
@@ -100,7 +146,7 @@ while True:
             try:
                 search(url)
             except:
-                print("Deleted")
+                print("Deleted 1")
             last_post = tail
             break		
 

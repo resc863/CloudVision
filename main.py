@@ -1,9 +1,50 @@
 from bs4 import BeautifulSoup
 import requests, time, base64, os
 from Vision import Vision
+from PIL import Image
+from io import BytesIO
 
+def ProcessGIF(img):
+    im = Image.open(img)
+    count = 0
 
-def ImageProcess(img, conclusion):
+    # To iterate through the entire gif
+    try:
+        while 1:
+            im.seek(im.tell()+1)
+            count = count + 1
+    except EOFError:
+        pass # end of sequence
+
+    im.seek(0)
+    buffered = BytesIO()
+    im.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode('UTF-8')
+    result = Vision(str(img_str))
+
+    if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence']== 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy']== 'VERY_LIKELY'):
+        text = "Sensitive Content Detected\n" + "Adult: " + result['adult'] + "\n" + "Violence: " + result['violence'] + "\n" + "Racy: " + result['racy'] + "\n" + "Medical: " + result['medical'] + "\n" + "Spoof: " + result['spoof']
+        print(text)
+        return 1
+    else:
+        print("Clear\n")
+        pass
+    
+    im.seek(count)
+    buffered = BytesIO()
+    im.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode('UTF-8')
+    result = Vision(str(img_str))
+    
+    if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence']== 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy']== 'VERY_LIKELY'):
+        text = "Sensitive Content Detected\n" + "Adult: " + result['adult'] + "\n" + "Violence: " + result['violence'] + "\n" + "Racy: " + result['racy'] + "\n" + "Medical: " + result['medical'] + "\n" + "Spoof: " + result['spoof']
+        print(text)
+        return 1
+    else:
+        print("Clear\n")
+        return 0
+
+def ImageProcess(img):
     image = str(base64.b64encode(img).decode('UTF-8'))
     result = Vision(image)
 
@@ -35,6 +76,7 @@ def search(url):
             break
         else:
             img = li.find("a")['href']
+            print(img[-3:])
             headers[0]['Referer'] = url
             try:
                 response = requests.get(img, headers=headers[0])
@@ -42,7 +84,12 @@ def search(url):
                 print('Error')
                 print("\n" + url + "\n")
                 continue
-            result = ImageProcess(response.content, conclusion)
+            if img[-3:] == "gif":
+                result = ProcessGIF(response.content)
+            else:
+                result = ImageProcess(response.content)
+            
+
             if result > 0:
                 print("\n" + url + "\n")
                 conclusion = True
