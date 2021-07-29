@@ -85,7 +85,7 @@ def search(url):
                 print("\n" + url + "\n")
                 continue
             if img[-3:] == "gif":
-                result = ProcessGIF(response.content)
+                result = ProcessGIF(BytesIO(response.content))
             else:
                 result = ImageProcess(response.content)
             
