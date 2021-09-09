@@ -129,7 +129,7 @@ headers = [
 ]
 
 BASE_URL = "https://gall.dcinside.com"
-last_post = ""
+read_post = []
 i = 0
 
 while True:
@@ -138,7 +138,7 @@ while True:
         "page": 1
     }
     
-    html = requests.get(url, params=params, headers=headers[i])
+    html = requests.get(url, params=params, headers=headers[0])
     
     if html.status_code != 200:
         time.sleep(5)
@@ -151,9 +151,14 @@ while True:
         time.sleep(5)
         continue
 
+    b = []
     post_list = tbody.find_all('tr', class_="ub-content")
+
+    for k in range(len(post_list)):
+        b.append(post_list[len(post_list)-k-1])
     
-    for l in post_list:
+    for l in b:
+        flag = False
         if (not (l.find('em')['class'][1] == "icon_pic")) or (l is None):
             continue
         
@@ -162,15 +167,23 @@ while True:
             continue
         
         tail = l.find('a', href=True)['href']
-        if last_post == tail:
-            break
-        else:
-            url1 = BASE_URL + tail
-            try:
-                search(url1)
-            except:
-                print("Error 1")
-            last_post = tail
-            break		
+
+        for j in read_post:
+            if tail == j:
+                flag = True
+        
+        if flag is True:
+            continue
+
+        if len(read_post) > 50:
+            del read_post[0:]
+
+        url1 = BASE_URL + tail
+        try:
+            search(url1)
+        except:
+            print("Error 1")
+
+        read_post.append(tail)		
 
     time.sleep(5)
