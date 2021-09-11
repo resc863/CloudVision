@@ -4,17 +4,15 @@ from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
 
-def ProcessGIF(img):
+def ProcessGIF(img): # GIF는 일부 프레임을 추출한뒤 검사
     im = Image.open(img)
     count = 0
-
-    # To iterate through the entire gif
     try:
         while 1:
             im.seek(im.tell()+1)
             count = count + 1
     except EOFError:
-        pass # end of sequence
+        pass # 이미지 시퀀스의 끝
 
     im.seek(0)
     buffered = BytesIO()
@@ -48,7 +46,7 @@ def ImageProcess(img):
     image = str(base64.b64encode(img).decode('UTF-8'))
     result = Vision(image)
 
-    while result == 1:
+    while result == 1: # 에러가 발생한 경우 다시 호출
         result = Vision(image)
 
     if (result['adult'] == 'LIKELY') or (result['adult'] == 'VERY_LIKELY') or (result['violence'] == 'LIKELY') or (result['violence'] == 'VERY_LIKELY') or (result['racy'] == 'LIKELY') or (result['racy'] == 'VERY_LIKELY'):
@@ -70,7 +68,7 @@ def search(url):
     title = soup.find("span", class_="title_subject").string
     print(title)
 
-    for li in lis:
+    for li in lis: # 게시글속 모든 사진 탐색
         if conclusion is True:
             break
         else:
@@ -140,7 +138,7 @@ while True:
     
     html = requests.get(url, params=params, headers=headers[0])
     
-    if html.status_code != 200:
+    if html.status_code != 200: # 각종 에러 메시지가 뜰 경우에는 생략
         time.sleep(5)
         continue
 
@@ -154,7 +152,7 @@ while True:
     b = []
     post_list = tbody.find_all('tr', class_="ub-content")
 
-    for k in range(len(post_list)):
+    for k in range(len(post_list)): # 한번도 읽지 않은 글을 찾기 위해 게시글 목록을 역전시킴
         b.append(post_list[len(post_list)-k-1])
     
     for l in b:
@@ -168,7 +166,7 @@ while True:
         
         tail = l.find('a', href=True)['href']
 
-        for j in read_post:
+        for j in read_post: # 목록에 없는 경우에만 탐색
             if tail == j:
                 flag = True
         
